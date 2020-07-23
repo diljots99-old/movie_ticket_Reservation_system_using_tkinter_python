@@ -42,12 +42,16 @@ def onSubmitPressed():
         messagebox.showerror("Login failed", "Username and password combination doesnot exits")
     else:
         print(userdetails[1])
-        window.destroy()
-        import adminDasboard
-        adminDasboard.start(userdetails[1])
+        if userdetails[1]['privilege'] == 'admin':
+            window.destroy()
+            import adminDasboard
+            adminDasboard.start(userdetails[1])
         
 
 submitBtn = Button(baseframe,text="Login",font=("Helvetica", 20),command=onSubmitPressed)
 submitBtn.grid(row=6,columnspan=3,rowspan=2,pady=10)
 
-window.mainloop()
+def start():
+    window.mainloop()
+
+start()
