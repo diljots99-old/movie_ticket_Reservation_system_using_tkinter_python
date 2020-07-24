@@ -44,8 +44,10 @@ def onSubmitPressed():
         print(userdetails[1])
         if userdetails[1]['privilege'] == 'admin':
             window.destroy()
-            import adminDasboard
-            adminDasboard.start(userdetails[1])
+            from adminDasboard import AdminDashboard
+            adminscreen = AdminDashboard(userdetails = userdetails[1])
+            adminscreen.mainloop()
+            # adminDasboard.start(userdetails[1])
         
 
 submitBtn = Button(baseframe,text="Login",font=("Helvetica", 20),command=onSubmitPressed)
