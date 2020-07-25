@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 from tkinter import messagebox
 from db import auth_user
 
@@ -66,21 +67,33 @@ class  AdminDashboard(Tk):
         # Header
         
 
-        header_frame = Frame(frame)
+        header_frame = Canvas(frame)
         header_frame.place(relx=0.01,rely=0.10,relwidth=0.75,relheight=.30)
 
+        scrollbar = ttk.Scrollbar(frame, orient="horizontal", command=header_frame.xview)
+        scrollable_frame = ttk.Frame(header_frame)
 
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: header_frame.configure(
+                scrollregion=header_frame.bbox("all")
+            )
+        )
 
         upcoming_movie = get_upcoming_movies()
+        header_frame.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        header_frame.configure(yscrollcommand=scrollbar.set)
 
-        Label(header_frame,text="Upcoming Movies",font=("Helvetica", 20)).grid(row=0,columnspan=5,stick=W)
+        scrollbar.place(relx=0.01,rely=0.40,relwidth=0.75)
+
+        Label(scrollable_frame,text="Upcoming Movies",font=("Helvetica", 20)).grid(row=0,columnspan=5,stick=W)
        
       
         i = 0
         if upcoming_movie:
             for movie in upcoming_movie:
                 print(movie['title'])
-                frmae = DisplayPoster(master=header_frame,movie=movie,height=160,width=90)
+                frmae = DisplayPoster(master=scrollable_frame,movie=movie,height=160,width=90)
                 frmae.grid(row= 1,column=i,pady=10,padx=10)
                 i += 1
 
