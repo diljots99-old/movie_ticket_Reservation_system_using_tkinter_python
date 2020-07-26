@@ -80,7 +80,7 @@ class  AdminDashboard(Tk):
             )
         )
 
-        upcoming_movie = get_upcoming_movies()
+        upcoming_movie = get_upcoming_movies(region='in')
         header_frame.create_window((0, 0), window=scrollable_frame, anchor="nw")
         header_frame.configure(yscrollcommand=scrollbar.set)
 
