@@ -2,6 +2,7 @@ import sqlite3
 from sqlite3 import Error
 import  os
 import requests
+
 current_dir = os.getcwd()
 db_location = current_dir + "\sqllite.db"
 print(db_location)
@@ -77,6 +78,47 @@ def auth_user(email,password):
     except :
         return None
 
+def getAllMovie():
+    try:
+        qry = "SELECT * FROM 'movies'"
+        conn = create_connection()
+        cur = conn.cursor()
+        cur.execute(qry)
+        rows = cur.fetchall()
+        
+        if len(rows) > 0:
+            return rows
+
+        if len(rows) == 0:
+            print("user does not exits")
+            return None
+    except :
+        return None
+
+def getAllScreens():
+    try:
+        qry = "SELECT * FROM 'screens' WHERE (username == '{}' OR email == '{}') AND  password == '{}';".format(email,email,password)
+        conn = create_connection()
+        cur = conn.cursor()
+        cur.execute(qry)
+        rows = cur.fetchall()
+        
+        if len(rows)==1:
+            print("User Exists")
+            userdetails = {
+                "UID":list(rows[0])[0],
+                "username":list(rows[0])[1],
+                "password":list(rows[0])[2],
+                "email":list(rows[0])[3],
+                "privilege":list(rows[0])[4]
+            }
+            return ["success",userdetails]
+        if len(rows) == 0:
+            print("user does not exits")
+            return None
+    except :
+        return None
+
 def addMoie(movie=None):
     if movie == None:
         return None
@@ -115,6 +157,35 @@ def addMoie(movie=None):
             cur.close()
             conn.close()
             return [0,"Data added Success Full"]
+        except sqlite3.IntegrityError as err:
+            print(err)
+            return [1,err]
+
+def addScreentoDb(screen=None):
+    if screen == None:
+        return None
+    else:
+        try:
+            total_capcity = screen['total_capcity']
+            regular_seats= screen['regular_seats']
+            regular_price= screen['regular_price']
+            preminum_seats= screen['preminum_seats']
+            preminum_prices= screen['preminum_prices']
+            gold_seats= screen['gold_seats']
+            gold_price= screen['gold_price']
+            layout =screen['layout']
+
+            qry = ''' INSERT INTO screens(total_capcity,regular_seats,regular_price,preminum_seats,preminum_prices,gold_seats,gold_price,layout)
+                VALUES(?,?,?,?,?,?,?,?) '''
+
+            data = (total_capcity,regular_seats,regular_price,preminum_seats,preminum_prices,gold_seats,gold_price,layout)
+            conn = create_connection()
+            cur = conn.cursor()
+            cur.execute(qry,data)
+            conn.commit()
+            cur.close()
+            conn.close()
+            return [0,"Data added Successfully"]
         except sqlite3.IntegrityError as err:
             print(err)
             return [1,err]

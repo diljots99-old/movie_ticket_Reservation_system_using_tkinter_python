@@ -32,7 +32,7 @@ def searchMovie(searchQuery):
             
         if r.status_code == 200:    
             responseJson = r.json()
-            results = list(responseJson['results'])
+            results = list(responseJson['results']) 
             if not len(results) == 0:
 
                 return results
